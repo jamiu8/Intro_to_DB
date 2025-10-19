@@ -1,20 +1,32 @@
 import mysql.connector
+from mysql.connector import Error
 
-# Replace with your connection details
-mydb = mysql.connector.connect(
-    host="127.0.0.1",
-    port="3306",
-    user="root",
-    password="SqHijerker1#")
+def create_database():
+    try:
+        # Connect to MySQL server
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",          # change this to your MySQL username
+            password="yourpassword"  # change this to your MySQL password
+        )
 
+        if connection.is_connected():
+            cursor = connection.cursor()
+            # Create database if it does not exist
+            cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
+            print("Database 'alx_book_store' created successfully!")
 
-cursor = mydb.cursor()
+    except Error as e:
+        print(f"Error while connecting to MySQL: {e}")
 
-cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
+    finally:
+        # Close cursor and connection safely
+        if 'cursor' in locals():
+            cursor.close()
+        if connection.is_connected():
+            connection.close()
+            print("MySQL connection closed.")
 
-print("Database 'alx_book_store' created successfully!")
-
-# Close the cursor and connection
-cursor.close()
-mydb.close()
-print("MySQL connection closed.")
+# Run the function
+if __name__ == "__main__":
+    create_database()
